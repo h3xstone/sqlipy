@@ -138,7 +138,7 @@ class ThreadExtender(IBurpExtender, IContextMenuFactory, ITab, IScannerCheck):
     while getattr(t, "keep_running", True):
 
       try:
-        req = urllib2.Request('http://' + self.sqlmapip + ':' + self.sqlmapport + '/scan/' + self.sqlmaptask + '/status')
+        req = urllib2.Request('http://' + str(self.sqlmapip) + ':' + str(self.sqlmapport) + '/scan/' + self.sqlmaptask + '/status')
         req.add_header('Content-Type', 'application/json')
         resp = json.load(urllib2.urlopen(req, timeout=10))
 
@@ -164,7 +164,7 @@ class ThreadExtender(IBurpExtender, IContextMenuFactory, ITab, IScannerCheck):
             lpswds = ''
 
             try:
-              req = urllib2.Request('http://' + self.sqlmapip + ':' + self.sqlmapport + '/scan/' + self.sqlmaptask + '/data')
+              req = urllib2.Request('http://' + str(self.sqlmapip) + ':' + str(self.sqlmapport) + '/scan/' + self.sqlmaptask + '/data')
               req.add_header('Content-Type', 'application/json')
               resp = json.load(urllib2.urlopen(req, timeout=10))
               vulnerable = False
@@ -1147,7 +1147,7 @@ class BurpExtender(IBurpExtender, IContextMenuFactory, ITab, IExtensionStateList
         # Final validation the API is running
         try:
           time.sleep(5)
-          req = urllib2.Request('http://' + self._jTextFieldIPListen.getText() + ':' + self._jTextFieldPortListen.getText() + '/scan/0/status')
+          req = urllib2.Request('http://' + str(self._jTextFieldIPListen.getText()) + ':' + str(self._jTextFieldPortListen.getText()) + '/scan/0/status')
           req.add_header('Content-Type', 'application/json')
           resp = json.load(urllib2.urlopen(req, timeout=10))
 
@@ -1177,7 +1177,7 @@ class BurpExtender(IBurpExtender, IContextMenuFactory, ITab, IExtensionStateList
       try:
         if self._jComboStopScan.getItemCount() is not 0:
           for item in range(0, self._jComboStopScan.getItemCount()):
-            req = urllib2.Request('http://' + self._jTextFieldScanIPListen.getText() + ':' + self._jTextFieldScanPortListen.getText() + '/scan/' + self._jComboStopScan.getItemAt(item).split('-')[0] + '/kill')
+            req = urllib2.Request('http://' + str(self._jTextFieldScanIPListen.getText()) + ':' + str(self._jTextFieldScanPortListen.getText()) + '/scan/' + self._jComboStopScan.getItemAt(item).split('-')[0] + '/kill')
             resp = json.load(urllib2.urlopen(req, timeout=3))
 
             if resp['success'] == True:
@@ -1232,7 +1232,7 @@ class BurpExtender(IBurpExtender, IContextMenuFactory, ITab, IExtensionStateList
       try:
         if self._jComboStopScan.getItemCount() is not 0:
           for item in range(0, self._jComboStopScan.getItemCount()):
-            req = urllib2.Request('http://' + self._jTextFieldScanIPListen.getText() + ':' + self._jTextFieldScanPortListen.getText() + '/scan/' + self._jComboStopScan.getItemAt(item).split('-')[0] + '/kill')
+            req = urllib2.Request('http://' + str(self._jTextFieldScanIPListen.getText()) + ':' + str(self._jTextFieldScanPortListen.getText()) + '/scan/' + self._jComboStopScan.getItemAt(item).split('-')[0] + '/kill')
             resp = json.load(urllib2.urlopen(req, timeout=3))
 
             if resp['success'] == True:
@@ -1271,7 +1271,7 @@ class BurpExtender(IBurpExtender, IContextMenuFactory, ITab, IExtensionStateList
 
   def getLogs(self, button):
     try:
-      req = urllib2.Request('http://' + self._jTextFieldScanIPListen.getText() + ':' + self._jTextFieldScanPortListen.getText() + '/scan/' + self._jComboLogs.getSelectedItem().split('-')[0] + '/log')
+      req = urllib2.Request('http://' + str(self._jTextFieldScanIPListen.getText()) + ':' + str(self._jTextFieldScanPortListen.getText()) + '/scan/' + str(self._jComboLogs.getSelectedItem().split('-')[0]) + '/log')
       resp = json.load(urllib2.urlopen(req, timeout=10))
 
       if resp['success'] == True:
@@ -1291,7 +1291,7 @@ class BurpExtender(IBurpExtender, IContextMenuFactory, ITab, IExtensionStateList
 
   def stopScan(self, button):
     try:
-      req = urllib2.Request('http://' + self._jTextFieldScanIPListen.getText() + ':' + self._jTextFieldScanPortListen.getText() + '/scan/' + self._jComboStopScan.getSelectedItem().split('-')[0] + '/kill')
+      req = urllib2.Request('http://' + str(self._jTextFieldScanIPListen.getText()) + ':' + str(self._jTextFieldScanPortListen.getText()) + '/scan/' + str(self._jComboStopScan.getSelectedItem().split('-')[0]) + '/kill')
       resp = json.load(urllib2.urlopen(req, timeout=10))
 
       if resp['success'] == True:
@@ -1505,17 +1505,18 @@ class BurpExtender(IBurpExtender, IContextMenuFactory, ITab, IExtensionStateList
     try:
       sqlmapcmd = 'sqlmap.py -u "' + self._jTextFieldURL.getText() + '"' + datacmd + httpmethodcmd + cookiecmd + uacmd + referercmd + custheadercmd + authtypecmd + authcredcmd + ignorecodecmd + proxycmd + torcmd + tortypecmd + torportcmd + ' --delay=' + str(self._jComboDelay.getSelectedItem()) + ' --timeout=' + str(self._jComboTimeout.getSelectedItem()) + ' --retries=' + str(self._jComboDelay.getSelectedItem()) + paramcmd + dbmscmd + oscmd + tampercmd + ' --level=' + str(self._jComboLevel.getSelectedItem()) + ' --risk=' + str(self._jComboRisk.getSelectedItem()) + textonly + hpp + ' --threads=' + str(self._jComboThreads.getSelectedItem()) + ' --time-sec=' + str(self._jComboTimeSec.getSelectedItem()) + ' -b' + cu + cdb + hostname + isdba + lusers + lpswds + lprivs + lroles + ldbs + ' --batch --answers="crack=N,dict=N,continue=Y,quit=N"\n\n'
       print 'SQLMap Command: ' + sqlmapcmd
-      req = urllib2.Request('http://' + self._jTextFieldScanIPListen.getText() + ':' + self._jTextFieldScanPortListen.getText() + '/task/new')
-      resp = json.load(urllib2.urlopen(req, timeout=10))
+      url = "http://" + str(self._jTextFieldScanIPListen.getText()) + ":" + str(self._jTextFieldScanPortListen.getText()) + "/task/new"
+      req =  urllib2.urlopen(url, timeout=10)
+      resp = json.loads(req.read())
 
       if resp['success'] == True and resp['taskid']:
-        sqlitask = resp['taskid']
+        sqlitask = str(resp['taskid'])
         sqliopts = {'authType': authtype, 'csrfUrl': csrfurl, 'csrfToken': csrftoken, 'liveCookies': livecookies, 'skipHeuristics': skipheuristics, 'proxyFreq': proxyfreq, 'getUsers': lusersstatus, 'getPasswordHashes': lpswdsstatus, 'delay': self._jComboDelay.getSelectedItem(), 'isDba': isdbastatus, 'risk': self._jComboRisk.getSelectedItem(), 'getCurrentUser': custatus, 'getRoles': lrolesstatus, 'getPrivileges': lprivsstatus, 'testParameter': paramdata, 'timeout': self._jComboTimeout.getSelectedItem(), 'ignoreCode': ignorecodedata, 'torPort': torport, 'level': self._jComboLevel.getSelectedItem(), 'getCurrentDb': cdbstatus, 'answers': 'crack=N,dict=N,continue=Y,quit=N', 'method': httpmethod, 'cookie': cookiedata, 'proxy': proxy, 'os': os, 'threads': self._jComboThreads.getSelectedItem(), 'url': self._jTextFieldURL.getText(), 'getDbs': ldbsstatus, 'tor': torstatus, 'torType': tortype, 'referer': refererdata, 'retries': self._jComboRetry.getSelectedItem(), 'headers': custheaderdata, 'authCred': authcred, 'timeSec': self._jComboTimeSec.getSelectedItem(), 'getHostname': hostnamestatus, 'agent': uadata, 'dbms': dbms, 'tamper': tamperdata, 'hpp': hppstatus, 'getBanner': 'true', 'data': postdata, 'textOnly': textonlystatus}
 
         print 'Created SQLMap Task: ' + sqlitask + '\n'
 
         try:
-          req = urllib2.Request('http://' + self._jTextFieldScanIPListen.getText() + ':' + self._jTextFieldScanPortListen.getText() + '/option/' + sqlitask + '/set')
+          req = urllib2.Request('http://' + str(self._jTextFieldScanIPListen.getText()) + ':' + str(self._jTextFieldScanPortListen.getText()) + '/option/' + sqlitask + '/set')
           req.add_header('Content-Type', 'application/json')
           resp = json.load(urllib2.urlopen(req, json.dumps(sqliopts), timeout=10))
 
@@ -1524,14 +1525,14 @@ class BurpExtender(IBurpExtender, IContextMenuFactory, ITab, IExtensionStateList
             sqliopts = {'url': self._jTextFieldURL.getText()}
 
             try:
-              checkreq = urllib2.Request('http://' + self._jTextFieldScanIPListen.getText() + ':' + self._jTextFieldScanPortListen.getText() + '/option/' + sqlitask + '/list')
+              checkreq = urllib2.Request('http://' + str(self._jTextFieldScanIPListen.getText()) + ':' + str(self._jTextFieldScanPortListen.getText()) + '/option/' + sqlitask + '/list')
               checkresp = json.load(urllib2.urlopen(checkreq, timeout=10))
               print 'SQLMap options returned: ' + json.dumps(checkresp) + '\n'
             except:
               print 'Failed to get list of options from SQLMap API\n'
 
             try:
-              req = urllib2.Request('http://' + self._jTextFieldScanIPListen.getText() + ':' + self._jTextFieldScanPortListen.getText() + '/scan/' + sqlitask + '/start')
+              req = urllib2.Request('http://' + str(self._jTextFieldScanIPListen.getText()) + ':' + str(self._jTextFieldScanPortListen.getText()) + '/scan/' + sqlitask + '/start')
               req.add_header('Content-Type', 'application/json')
               resp = json.load(urllib2.urlopen(req, json.dumps(sqliopts), timeout=10))
 
